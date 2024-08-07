@@ -9,51 +9,112 @@
 
         /*
             Grid : 
-                - 
-                - 
+                - 2차원(행과 열) 레이아웃 시스템을 제공하여 복잡한 레이아웃 구성을 쉽게 할 수 있음
+                - 1차원 레이아웃은 flexbox가 유용, 2차원 레이아웃은 grid가 유용
         */
 
         /*
-            Grid Container 속성 : 
+            Grid Container 속성 : grid item을 자식으로 가지는 부모 요소로 display 속성 값을 grid 혹은 inline-grid로 지정 가능
         */
+        .grid-container {
+            display: grid;
 
+        }
 
 
         /*
-            grid-template-columns 속성 : 
-            grid-template-rows 속성 : 
-            grid-template-areas 속성 : 
+            grid-template-columns 속성 : grid의 열의 크기와 개수를 지정
+            grid-template-rows 속성 : grid의 행의 크기와 개수를 지정
+            grid-template-areas 속성 : grid의 각 영역에 대해 이름을 부여하고 그룹화
         */
-
-
+        .grid-template-columns-rows {
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: 100px 200px 300px;
+            grid-template-areas: 
+            "header header header"
+            "main main sideber"
+            "footer footer footer"
+        }
+        
         
         /*
-            grid-template 속성 : 
+        grid-template 속성 : *-*-columns, *-*-areas를 한번에 지정하는 단축 속성
         */
-
+        .grid-template {
+            grid-template: 
+            "header header header" 100px
+            "main main sideber" 200px
+            "footer footer footer" 300px
+            / 1fr 1fr 1fr 100px;
+        }
 
 
         /*
             Grid Item 속성 : 
-                - grid-column-start : 
-                - grid-column-end : 
-                - grid-row-start : 
-                - grid-row-end : 
+                - grid-column-start : grid item의 열 시작 위치 지정 
+                - grid-column-end : grid item의 열 종료 위치 지정
+                - grid-row-start : grid item의 행 시작 위치 지정
+                - grid-row-end : grid item의 행 종료 위치 지정
         */
-        
-
+        .header-1 {
+            background-color: gray;
+            grid-column-start: 1;
+            grid-column-end: 4;
+            grid-row-start: 1;
+            grid-row-end: 2;
+        }
+        .main-1 {
+            background-color: chocolate;
+            grid-column-start: 1;
+            grid-column-end: 3;
+            grid-row-start: 2;
+            grid-row-end: 3;
+        }
 
         /*
             Grid Item 단축 속성 : 
-                - 
-                - 
+                - grid-column : grid item의 열의 시작 및 종료 위치를 지정
+                - grid-row : grid item의 행의 시작 및 종료 위치를 지정
         */
-        
-
-
+        .header-2 {
+            background-color: aqua;
+            grid-column: 1 / 4;
+            grid-row: 1 / 2;
+        }
+        .main-2 {
+            background-color: blue;
+            grid-column: 1 / 3;
+            grid-row:  2 / 3;
+        }
+        .sidebar-2 {
+            background-color: beige;
+            grid-column: 3 / 4;
+            grid-row: 2 / 3;
+        }
+        .footer-2 {
+            background-color: red;
+            grid-column: 1 / 4;
+            grid-row: 3 / 4;
+        }
         /*
-            grid-area 속성 : 
+        grid-area 속성 : grid item의 그룹 이름으로 위치를 지정
         */
+        .header-3 {
+            background-color: aqua;
+            grid-area: header;
+        }
+        .main-3 {
+            background-color: blue;
+            grid-area: main;
+        }
+        .sidebar-3 {
+            background-color: beige;
+            grid-area: sidebar;
+        }
+        .footer-3 {
+            background-color: red;
+            grid-area: footer;
+        }
         
         
 

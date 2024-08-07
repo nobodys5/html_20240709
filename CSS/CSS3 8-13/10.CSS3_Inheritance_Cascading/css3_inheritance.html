@@ -9,12 +9,23 @@
 
         /*
             스타일 상속 : 
-                - 
-                - 
-                - 
-                - 
+                - 상위 요소에 지정한 속성을 하위 요소가 물려받은 것
+                - 모든 속성이 상속되지는 않음
+                - 상속 불가능 : 박스모델, 정렬, 위치 지정, 배경,...
+                - 상속 불가능한 요소를 상속받고 싶으면 inherit이라는 값을 사용
         */
+        .parent {
+            color:  blue;
+            font-size: 24px;
 
+            background-color: red;
+            padding: 10px;
+        }
+
+        .child {
+            background-color: inherit;
+            padding: inherit;
+        }
     </style>
 </head>
 <body>

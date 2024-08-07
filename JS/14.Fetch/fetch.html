@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTTP Fetch</title>
+</head>
+
+<body>
+
+    <script>
+
+        /*
+            JSON: JavaScript Object Notation
+            - 클라이언트와 서버 간 데이터 교환을 위한 문자열 포맷
+            - XML 포맷보다 가볍고 사용성이 편리함
+            - 자바스크립트 객체 리터럴과 동일하게 생겼지만, JSON은 100% 텍스트
+        */
+
+        /*
+            JSON.stringify(객체) : javascript 객체를 JSON 형식의 문자열로 변환
+        */
+        var employee = {
+            name : '홍길동',
+            age : 23
+        };
+        console.log(employee, typeof employee);
+
+        var jsonEmployee = JSON.stringify(employee);
+        console.log(jsonEmployee, typeof jsonEmployee);
+        
+
+        console.log('==============================');
+
+        /*
+            JSON.parse(JSON 문자열) : JSON 형식의 문자열 데이터를 자바스크립트 객체로 변경 
+        */
+        var stringJson = '{"name": "이성계", "age":"55" }';
+        console.log(stringJson, typeof stringJson);
+        
+        var king = JSON.parse(stringJson);
+        console.log(king, typeof king);
+        console.log(king.name, king.age);
+
+        console.log('==============================');
+
+        /*
+            Fetch API
+            - HTTP 요청고 응답을 javascript에서 접근하고 조작할 수 있는 인터페이스
+            - 비동기 함수
+            - fetch(url, options);
+            - fetch(url, options).then(callback).catch(callback);
+        */
+
+       
+       /*
+       Request
+       */
+        // fetch 함수는 기본적으로 GET 요청
+       fetch('http://localhost:5500');
+       
+       // 특정 HTTP 메서드로 전달하고자 할땐 두번째 매개변수 option 객체를 전달
+       fetch('http://localhost:5500', {
+            method: 'POST',
+            body: stringJson
+       });
+
+       // QueryString으로 데이터를 전송하는 방법
+       var queryString = new URLSearchParams(king).toString();
+       fetch('http://localhost:5500/?' + queryString);
+       
+
+       var response = fetch('https://reqres.in/api/users?page=2').then(function (response) {
+        console.log(response.json());
+       });
+       console.log('fetch 종료');
+
+       console.log('==============================');
+
+    </script>
+
+</body>
+
+</html>

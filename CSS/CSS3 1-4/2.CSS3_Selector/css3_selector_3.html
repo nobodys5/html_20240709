@@ -9,48 +9,90 @@
         * { font-size: 24px; }
 
         /* 가상 클래스 선택자 */
-        /*  */
+        /* 요소의 특정한 상태에 따라서 선택하고자 할 때 사용, CSS 표준에 미리 지정된 상태만 선택 가능 */
 
 
         /* 링크, 동적 선택자 */
-        /* ":link" :  */
+        /* ":link" : 방문하지 않은 링크일 때 */
+        .link:link {
+            color: rgba(0, 0, 0, 0.7);
+        }
 
-        /* ":visited" :  */
+        /* ":visited" : 방문한 링크일 때 */
+        .link:visited {
+            color: rgba(0, 255, 0, 0.7);
+        }
 
-        /* ":hover" :  */
+        /* ":hover" : 요소에 마우스를 올렸을 때 */
+        .action:hover {
+            background-color: rgba(255, 0, 0, 0.7);
+        }
 
-        /* ":active" :  */
+        /* ":active" : 요소를 클릭한 상태일 때 */
+        .action:active {
+            background-color: rgba(0, 0, 255, 0.7);
+        }
 
-        /* ":focus" :  */
-
+        /* ":focus" : 요소의 커서가 맞춰져 있을 때 */
+        .action:focus {
+            background-color: aqua;
+        }
 
         /* UI 요소 선택자 */
-        /* ":checked" :  */
-        
-        /* ":enabled" :  */
+        /* ":checked" : 요소가 체크된 상태일 때 */
+        .ui:checked + .label {
+            color: red;
+        }
+        /* ":enabled" : 요소가 사용 가능한 상태일 때 */
+        .ui:enabled + .label {
+            font-weight: 900;
+        }
 
-        /* ":disabled" :  */
-
+        /* ":disabled" : 요소가 사용 불가능한 상태일 때 */
+        .ui:disabled + .label {
+            text-decoration: line-through;
+        }
 
         /* 구조 선택자 */
-        /* ":first-child" :  */
-        
-        /* ":last-child" :  */
+        /* ":first-child" : 선택자에 해당하는 요소 중 첫번째 형제 요소 */
+        .structural:first-child {
+            background-color: aquamarine;
+        }
 
+        /* ":last-child" : 선택자에 해당하는 요소 중 마지막 형제 요소를 선택 */
+        .structural:last-child {
+            background-color: beige;
+        }
 
 
         /* 가상 요소 선택자 */
-        /*   */
+        /* 요소의 특정 부분을 선택할 때 사용  */
 
-        /* "::first-letter" :  */
+        /* "::first-letter" : 컨텐츠의 첫 글자 */
+        .pseudo1::first-letter {
+            font-size: 48px;
+        }
+        
+        /* "::first-line" : 컨텐츠의 첫 줄  */
+        .pseudo1::first-line {
+            font-size: 48px;
+        }
+        
+        /* "::after" : 컨텐츠의 뒤쪽 위치를 선택 */
+        .pseudo2::after {
+            content: '★';
+        }
 
-        /* "::first-line" :  */
-
-        /* "::after" :  */
-
-        /* "::before" :  */
-
-        /* "::selection" :  */
+        /* "::before" : 컨텐츠의 앞쪽 위치를 선택 */
+        
+        .pseudo2::before {
+            content: '★';
+        }
+        
+        /* "::selection" : 드래그한 컨텐츠를 선택 (대부분의 브라우저에서 지원하지 않음) */
+        .pseudo2::selection {
+            background-color: aquamarine;
+        }
 
     </style>
 </head>

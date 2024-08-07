@@ -11,16 +11,29 @@
         /* 구글 폰트 : https://fonts.google.com/?subset=korean&noto.script=Kore */
 
         /*
-            CDN 링크 방식 : 
+            CDN 링크 방식 : @import 방식으로 웹 폰트를 다운받아 사용
         */
-        
-
-
+        @import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic&family=Noto+Sans+KR:wght@100..900&display=swap');
+        .nanum-gothic-regular {
+             font-family: "Nanum Gothic";
+ 
+        }
+        .nanum-gothic {
+            font-family: "Nanum Gothic";
+        }
         /*
-            서버 폰트 로딩 방식 : 
+            서버 폰트 로딩 방식 : @font-face 방식으로 웹 폰트를 등록해서 사용
         */
         
-
+        @font-face {
+        font-family: 'Pretendard-Regular';
+         src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+        font-weight: 400;
+        font-style: normal;
+        }
+        .pretendard {
+            font-family: 'Pretendard-Regular';
+        }
 
     </style>
 
