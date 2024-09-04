@@ -88,5 +88,6 @@ console.log(newKIng);
 newKIng = { ...king, name: '이단', birth: '1355-11-04' };
 console.log(newKIng);
 
+// 원본배열의 순서를 바꾸면 값이 바뀌지않음
 newKIng = { name: '이단' , ...king, birth: '1355-11-04' };
 console.log(newKIng);
