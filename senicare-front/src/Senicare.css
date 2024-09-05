@@ -130,6 +130,11 @@ input::placeholder {
     background-color: var(--primary-color);
 }
 
+.button.second {
+    background-color: var(--primary-10-color);
+    color: var(--primary-color);
+}
+
 .button.disable {
     background-color: var(--gray-color);
 }
