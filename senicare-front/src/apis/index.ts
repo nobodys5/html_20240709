@@ -1,6 +1,7 @@
 import axios, { AxiosResponse } from "axios";
-import { IdCheckRequestDto, TelAuthRequestDto } from "./dto/request/auth";
+import { IdCheckRequestDto, SignInRequestDto, SignUpRequestDto, TelAuthCheckRequestDto, TelAuthRequestDto } from "./dto/request/auth";
 import { ResponseDto } from "./dto/response";
+import { SignInResponseDto } from "./dto/response/auth";
 
 const SENICARE_API_DOMAIN ='http://localhost:4000';
 
@@ -40,4 +41,32 @@ export const telAuthRequestDto = async (requestBody: TelAuthRequestDto) => {
         .catch(responseErrorHandler);
 
         return responseBody;
-}
+};
+
+//function: tel auth check api 요청 함수 //
+export const telAuthCheckRequestDto = async (requestBody: TelAuthCheckRequestDto) => {
+    const responseBody = await axios.post(TEL_AUTH_CHECK_API_URL, requestBody)
+    .then(responseDataHandler<ResponseDto>)
+    .catch(responseErrorHandler);
+
+    return responseBody;
+};
+
+//function: sign up api 요청 함수 //
+export const signUpRequest = async (requestBody: SignUpRequestDto) => {
+    const responseBody = await axios.post(SIGN_UP_API_URL, requestBody)
+    .then(responseDataHandler<ResponseDto>)
+    .catch(responseErrorHandler);
+
+    return responseBody;
+};
+
+
+//function: sign in api 요청 함수 //
+export const signInRequest = async (requestBody: SignInRequestDto) => {
+    const responseBody = await axios.post(SIGN_IN_API_URL, requestBody)
+    .then(responseDataHandler<SignInResponseDto>)
+    .catch(responseErrorHandler);
+
+    return responseBody;
+};
