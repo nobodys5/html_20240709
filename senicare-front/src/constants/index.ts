@@ -9,6 +9,8 @@ export const MM_PATH = '/mm';
 export const HR_PATH = '/hr';
 export const HR_DETAIL_PATH = (userId: string) => `${userId}`;
 export const OTHERS_PATH = '*';
+export const SNS_SUCCESS_PATH = '/sns-success';
+
 
 // variable: 절대 경로 상수 //
 export const ROOT_ABSOLUTE_PATH = ROOT_PATH;
