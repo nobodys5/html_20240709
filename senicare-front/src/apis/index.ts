@@ -4,6 +4,8 @@ import { ResponseDto } from "./dto/response";
 import { SignInResponseDto } from "./dto/response/auth";
 import exp from "constants";
 import { GetSignInResponseDto } from "./dto/response/nurse";
+import { PostToolRequestDto } from "./dto/request/tool";
+import { GetToolListResponseDto } from "./dto/response/tool";
 
 const SENICARE_API_DOMAIN ='http://localhost:4000';
 
@@ -18,6 +20,11 @@ const SIGN_IN_API_URL = `${AUTH_MODULE_URL}/sign-in`;
 const NURSE_MODUEL_URL = `${SENICARE_API_DOMAIN}/api/v1/nurse`;
 
 const GET_SIGN_IN_API_URL = `${NURSE_MODUEL_URL}/sign-in`;
+
+const TOOL_MODULE_URL = `${SENICARE_API_DOMAIN}/api/v1/tool`;
+
+const POST_TOOL_API_URL = `${TOOL_MODULE_URL}`;
+const GET_TOOL_LIST_API_URL = `${TOOL_MODULE_URL}`;
 
 
 // function : Authorization Bearer 헤더 //
@@ -92,3 +99,21 @@ export const getSignInRequest = async (accessToken: string) => {
 
     return responseBody;
 }
+
+
+// function: post tool 요청 함수 //
+export const postToolRequest = async (requestBody: PostToolRequestDto, accessToken: string) => {
+    const responseBody = await axios.post(POST_TOOL_API_URL, requestBody, bearerAuthorization(accessToken))
+    .then(responseDataHandler<ResponseDto>)
+    .catch(responseErrorHandler);
+
+    return responseBody;
+}
+
+// function: get tool list 요청 함수 //
+export const getToolListRequest = async (accessToken: string) => {
+    const responseBody = await axios.get(GET_TOOL_LIST_API_URL, bearerAuthorization(accessToken))
+        .then(responseDataHandler<GetToolListResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+};
