@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 
+// 훅으로 빼내서 페이징 처리하기위한 용도의 훅
+
 // variable: 페이지 당 아이템 수 //
 const ITEMS_PER_PAGE = 5;
 // variable: 섹션 당 페이지 수 //
@@ -25,22 +27,22 @@ const usePagination = <T>() => {
         const totalSection = Math.ceil(totalPage / PAGES_PER_SECTION);
         setTotalSection(totalSection);
 
-        if (!totalCount) {
-            setCurrentPage(0);
-            setCurrentSection(0);
-        } else {
             setCurrentPage(1);
             setCurrentSection(1);
-        }
+
+            initViewList(totalList);
     };
 
     // function: 페이지 변경 함수 //
     const initViewList = (totalList: T[]) => {
         const totalCount = totalList.length;
+        // 시작 인덱스 
         const startIndex = ITEMS_PER_PAGE * (currentPage - 1);
+        // 마지막 인덱스
         let endIndex = startIndex + ITEMS_PER_PAGE;
         if (endIndex > totalCount) endIndex = totalCount;
 
+        // viewList 에 totallist를 잘라서 시작인덱스 부터 마지막인덱스 값까지 잘라서 넣는다.
         const viewList = totalList.slice(startIndex, endIndex);
         setViewList(viewList);
     };
@@ -92,7 +94,7 @@ const usePagination = <T>() => {
     // effect: 현재 섹션이 변경될 시 실행할 함수 //
     useEffect(() => {
         initPageList(totalPage);
-    }, [currentSection]);
+    }, [totalCount, currentSection]);
 
     // effect: 현재 페이지가 변경될 시 실행할 함수 //
     useEffect(() => {
@@ -107,7 +109,6 @@ const usePagination = <T>() => {
         pageList,
         setTotalList,
         initViewList,
-        initPageList,
         onPageClickHandler,
         onPreSectionClickHandler,
         onNextSectionClickHandler

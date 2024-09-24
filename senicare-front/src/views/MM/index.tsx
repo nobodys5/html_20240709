@@ -2,20 +2,23 @@ import React, { ChangeEvent, useEffect, useState } from 'react'
 import './style.css';
 import { useCookies } from 'react-cookie';
 import { ACCESS_TOKEN } from 'src/constants';
-import { PostToolRequestDto } from 'src/apis/dto/request/tool';
-import { getToolListRequest, postToolRequest } from 'src/apis';
+import { PatchToolRequestDto, PostToolRequestDto } from 'src/apis/dto/request/tool';
+import { deleteToolRequest, getToolListRequest, getToolRequest, patchToolRequest, postToolRequest } from 'src/apis';
 import { ResponseDto } from 'src/apis/dto/response';
 import { Tool } from 'src/types';
-import { GetToolListResponseDto } from 'src/apis/dto/response/tool';
+import { GetToolListResponseDto, GetToolResponseDto } from 'src/apis/dto/response/tool';
 import { usePagenation } from 'src/hooks';
+import Pagenation from 'src/components/Pagenation';
 
 // interface: 용품 등록 컴포넌트 Properties //
 interface PostBoxProps {
+  // Props로 자식 컴포넌트에 등록 취소 버튼 클릭시 동작하게 하기위한 코드
     unShow: () => void;
+    getToolList: () => void;
 }
 
 // component: 용품 등록 컴포넌트 //
-function PostBox({ unShow }: PostBoxProps) {
+function PostBox({ unShow, getToolList }: PostBoxProps) {
 
     // state: cookie 상태 //
     const [cookies] = useCookies();
@@ -33,18 +36,22 @@ function PostBox({ unShow }: PostBoxProps) {
             responseBody.code === 'AF' ? '잘못된 접근입니다.' :
             responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
         
+            // 응답데이터가 null이 아니거나 응답데이터.코드가 성공이면 성공
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+        // 만약 이코드가 존재하지않으면 메세지를 띄우고 리턴시켜서 종료
         if (!isSuccessed) {
             alert(message);
             return;
         }
-
+        
+        getToolList();
         unShow();
     };
 
     // event handler: 용품 이름 변경 이벤트 처리 함수 //
     const onNameChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
         const { value } = event.target;
+        // 이름 상태변경에 값이 들어갈수있게 해주는 코드
         setName(value);
     };
 
@@ -57,22 +64,27 @@ function PostBox({ unShow }: PostBoxProps) {
     // event handler: 개수 변경 이벤트 처리 함수 //
     const onCountChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
         const { value } = event.target;
+        // 정규표현식으로 숫자만 입력하게 조건거는코드
         const regexp = /^[0-9]*$/;
+        // 정규표현식을 테스트하는 코드
         const isNumber = regexp.test(value);
         if (!isNumber) return;
         setCount(value);
     };
+
 
     // event handler: 등록 버튼 클릭 이벤트 처리 함수 //
     const onPostButtonClickHandler = () => {
         const accessToken = cookies[ACCESS_TOKEN];
         if (!accessToken) return;
 
+        // 만약 용품명, 용도, 개수가 없다면 모두입력해주세요를 띄우고 함수 동작 중지
         if (!name || !purpose || !count) {
             alert('모두 입력해주세요.');
             return;
         }
         const requestBody: PostToolRequestDto = {
+            // 아래의 개수는 문자형으로 잡혀있어 숫자로 받을수 있게끔 형변환시켜준것
             name, purpose, count: Number(count)
         };
 
@@ -105,11 +117,107 @@ function PostBox({ unShow }: PostBoxProps) {
 
 // interface: 용품 수정 컴포넌트 Properties //
 interface PatchBoxProps {
+    toolNumber: number;
     unShow: () => void;
+    getToolLIst: () => void;
 }
 
 // component: 용품 수정 컴포넌트 //
-function PatchBox({ unShow }: PatchBoxProps) {
+function PatchBox({ toolNumber, unShow, getToolLIst }: PatchBoxProps) {
+
+    // state: cookie 상태 //
+    const [cookies] = useCookies();
+
+    // state: 용품 정보 상태 //
+    const [name, setName] = useState<string>('');
+    const [purpose, setPurpose] = useState<string>('');
+    const [count, setCount] = useState<string>('');
+
+    // function: get tool response 처리 함수 //
+    const getToolResponse = (responseBody: GetToolResponseDto | ResponseDto | null) => {
+        const message =
+            !responseBody ? '서버에 문제가 있습니다.' :
+            responseBody.code === 'VF' ? '잘못된 접근입니다.' :
+            responseBody.code === 'VF' ? '잘못된 접근입니다.' :
+            responseBody.code === 'NT' ? '존재하지 않는 용품입니다.' : 
+            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+        const isSuccessed = responseBody !== null && responseBody?.code === 'SU'; 
+        if(!isSuccessed) {
+          alert(message)
+          unShow();
+          return;
+        }
+
+        const { name, purpose, count } = responseBody as GetToolResponseDto;
+        setName(name);
+        setPurpose(purpose);
+        setCount(String(count));
+    };
+
+    // function: patch tool response 처리 함수 //
+    const patchToolResponse = (responseBody: ResponseDto | null) => {
+      const message =
+            !responseBody ? '서버에 문제가 있습니다.' :
+            responseBody.code === 'VF' ? '모든 값을 입력해주세요.' :
+            responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+            responseBody.code === 'NT' ? '존재하지 않는 용품입니다.' : 
+            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+        const isSuccessed = responseBody !== null && responseBody?.code === 'SU'; 
+        if(!isSuccessed) {
+          alert(message)
+          return;
+        };
+
+        getToolLIst();
+        unShow();
+      }
+    // event handler: 용품 이름 변경 이벤트 처리 함수 //
+    const onNameChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+      const { value } = event.target;
+      // 이름 상태변경에 값이 들어갈수있게 해주는 코드
+      setName(value);
+  };
+
+  // event handler: 용도 변경 이벤트 처리 함수 //
+  const onPurposeChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+      const { value } = event.target;
+      setPurpose(value);
+  };
+
+  // event handler: 개수 변경 이벤트 처리 함수 //
+  const onCountChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+      const { value } = event.target;
+      // 정규표현식으로 숫자만 입력하게 조건거는코드
+      const regexp = /^[0-9]*$/;
+      // 정규표현식을 테스트하는 코드
+      const isNumber = regexp.test(value);
+      if (!isNumber) return;
+      setCount(value);
+  };
+
+    // event handler: 수정 버튼 클릭 이벤트 처리 함수 //
+    const onUpdateButtonClickHandler = () => {
+        if (!name || !purpose || !count ) {
+          alert('모든 값을 입력해주세요.')
+          return;
+        }
+
+        const accessToken = cookies[ACCESS_TOKEN];
+        if (!accessToken) return;
+
+        const requestBody: PatchToolRequestDto = {
+            name, purpose, count: Number(count)
+        };
+        patchToolRequest(requestBody, toolNumber, accessToken).then(patchToolResponse);
+    };
+
+
+    // effect: toolNumber가 변경될 시 실행할 함수 //
+    useEffect(() => {
+        const accessToken = cookies[ACCESS_TOKEN];
+        if (!accessToken) return;
+        getToolRequest(toolNumber, accessToken).then(getToolResponse)
+    }, [toolNumber]);
 
     // render: 용품 수정 컴포넌트 렌더링 //
     return (
@@ -117,18 +225,18 @@ function PatchBox({ unShow }: PatchBoxProps) {
             <div className='post-patch-input-container'>
                 <div className='input-box'>
                     <div className='input-label'>용품명</div>
-                    <input className='input' placeholder='용품명을 입력해주세요' />
+                    <input className='input' value={name} placeholder='용품명을 입력해주세요' onChange={onNameChangeHandler} />
                 </div>
                 <div className='input-box' style={{ flex: 1 }}>
                     <div className='input-label'>용도</div>
-                    <input className='input' placeholder='용도를 입력해주세요' />
+                    <input className='input' value={purpose} placeholder='용도를 입력해주세요' onChange={onPurposeChangeHandler} />
                 </div>
                 <div className='input-box'>
                     <div className='input-label'>개수</div>
-                    <input className='input' placeholder='개수를 입력해주세요' />
+                    <input className='input' value={count} placeholder='개수를 입력해주세요' onChange={onCountChangeHandler} />
                 </div>
             </div>
-            <div className='button second'>수정</div>
+            <div className='button second' onClick={onUpdateButtonClickHandler}>수정</div>
             <div className='button disable' onClick={unShow}>취소</div>
         </div>
     )
@@ -138,11 +246,45 @@ function PatchBox({ unShow }: PatchBoxProps) {
 // interface: 용품 리스트 아이템 컴포넌트 Properties //
 interface TableRowProps {
     tool: Tool;
+    getToolList : () => void;
     onUpdateButtonClickHandler: (toolNumber: number) => void;
+    
 }
 
 // component: 용품 리스트 아이템 컴포넌트 //
-function TableRow({ tool, onUpdateButtonClickHandler }: TableRowProps) {
+function TableRow({ tool, getToolList, onUpdateButtonClickHandler }: TableRowProps) {
+
+    // state: cookie 상태 //
+    const [cookies] = useCookies();
+
+    // function: delete tool response 처리 함수 //
+    const deleteToolResponse = (responseBody: ResponseDto | null) => {
+        const message =
+            !responseBody ? '서버에 문제가 있습니다.' :
+            responseBody.code === 'VF' ? '잘못된 접근입니다.' :
+            responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+            responseBody.code === 'NT' ? '존재하지 않는 용품입니다.' :
+            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
+            const isSuccessed = responseBody !== null && responseBody?.code === 'SU'; 
+
+        if (!isSuccessed) {
+        alert(message)
+        return;
+      }
+
+      getToolList();
+    };
+
+    // event handler: 삭제 버튼 클릭 이벤트 처리 함수 //
+    const onDelteButtonClickHandler = () => {
+        const isConfirm = window.confirm('정말로 삭제하시겠습니까?');
+        if (!isConfirm) return;
+
+        const accessToken = cookies[ACCESS_TOKEN];
+        if (!accessToken) return;
+        deleteToolRequest(tool.toolNumber, accessToken).then(deleteToolResponse);
+    };
 
     // render: 용품 리스트 아이템 컴포넌트 렌더링 //
     return (
@@ -156,7 +298,7 @@ function TableRow({ tool, onUpdateButtonClickHandler }: TableRowProps) {
                     <div className='icon-button edit' onClick={() => onUpdateButtonClickHandler(tool.toolNumber)}></div>
                 </div>
                 <div className='td-delete'>
-                    <div className='icon-button trash'></div>
+                    <div className='icon-button trash' onClick={onDelteButtonClickHandler}></div>
                 </div>
             </div>
         </div>
@@ -173,6 +315,7 @@ export default function MM() {
     // state: 등록 및 수정 박스 뷰 상태 //
     const [showPostBox, setShowPostBox] = useState<boolean>(false);
     const [showPatchBox, setShowPatchBox] = useState<boolean>(false);
+    const [patchToolNumber, setPatchToolNumber] = useState<number>(0);
 
     // state: 검색어 상태 //
     const [searchWord, setSearchWord] = useState<string>('');
@@ -182,7 +325,7 @@ export default function MM() {
 
     const { 
         currentPage, totalPage, totalCount, viewList, pageList,
-        setTotalList, initViewList, initPageList,
+        setTotalList, initViewList,
         onPageClickHandler, onPreSectionClickHandler, onNextSectionClickHandler
     } = usePagenation<Tool>();
 
@@ -204,6 +347,15 @@ export default function MM() {
         setOriginalList(tools);
     };
 
+    // function: tool list 불러오기 함수 //
+    const getToolList = () => {
+      const accessToken = cookies[ACCESS_TOKEN];
+      if (!accessToken) return;
+      getToolListRequest(accessToken).then(getToolListResponse);
+    };
+    // // function: get tool list response 처리 함수 //
+    // const
+
     // function: 등록 박스 뷰 상태 변경 함수 //
     const unShowPostBox = () => setShowPostBox(false);
 
@@ -219,7 +371,7 @@ export default function MM() {
     // event handler: 수정 버튼 클릭 이벤트 처리 함수 //
     const onUpdateButtonClickHandler = (toolNumber: number) => {
         setShowPatchBox(true);
-
+        setPatchToolNumber(toolNumber);
     };
 
     // event handler: 검색어 변경 이벤트 처리 함수 //
@@ -233,21 +385,18 @@ export default function MM() {
         const searchedToolList = originalList.filter(tool => tool.name.includes(searchWord));
         setTotalList(searchedToolList);
         initViewList(searchedToolList);
-        initPageList(searchedToolList.length);
+        // initPageList(searchedToolList.length);
     };
 
     // effect: 컴포넌트 로드시 용품 리스트 불러오기 함수 //
-    useEffect(() => {
-        const accessToken = cookies[ACCESS_TOKEN];
-        if (!accessToken) return;
-        getToolListRequest(accessToken).then(getToolListResponse);
-    }, []);
+    useEffect(getToolList, []);
 
     // render: 용품 관리 리스트 컴포넌트 렌더링 //
     return (
         <div id='mm-wrapper'>
-            {showPostBox && <PostBox unShow={unShowPostBox} />}
-            {showPatchBox && <PatchBox unShow={unShowPatchBox} />}
+            {/* 등록버튼을 클릭하여 활성화되면 취소버튼을 클릭하면 동작하는 코드*/}
+            {showPostBox && <PostBox unShow={unShowPostBox} getToolList={getToolList} />}
+            {showPatchBox && <PatchBox unShow={unShowPatchBox} toolNumber={patchToolNumber} getToolLIst={getToolList} />}
             <div className='top'>
                 <div className='top-text'>전체 <span className='emphasis'>{totalCount}건</span> | 페이지 <span className='emphasis'>{currentPage}/{totalPage}</span></div>
                 {!showPostBox && !showPatchBox && <div className='button primary' onClick={onPostButtonClickHandler}>등록</div>}
@@ -264,17 +413,17 @@ export default function MM() {
                             <div className='td-delete'>삭제</div>
                         </div>
                     </div>
-                    {viewList.map((tool, index) => <TableRow key={index} tool={tool} onUpdateButtonClickHandler={onUpdateButtonClickHandler} />)}
+                    {viewList.map((tool, index) => <TableRow key={index} tool={tool} onUpdateButtonClickHandler={onUpdateButtonClickHandler} getToolList={getToolList} />)}
                 </div>
             </div>
             <div className='bottom'>
-                <div className='pagenation-box'>
-                    <div className='round-left-button' onClick={onPreSectionClickHandler}></div>
-                    <div className='page-list'>
-                        {pageList.map(page => <div key={page} className={page === currentPage ? 'page active' : 'page'} onClick={() => onPageClickHandler(page)}>{page}</div>)}
-                    </div>
-                    <div className='round-right-button' onClick={onNextSectionClickHandler}></div>
-                </div>
+                <Pagenation 
+                    pageList={pageList}
+                    currentPage={currentPage}
+                    onPageClickHandler={onPageClickHandler}
+                    onPreSectionClickHandler={onPreSectionClickHandler}
+                    onNextSectionClickHandler={onNextSectionClickHandler}
+                />
                 <div className='search-box'>
                     <input className='search-input' value={searchWord} placeholder='검색어를 입력하세요.' onChange={onSearchWordChangeHandler} />
                     <div className='button disable' onClick={onSearchButtonClickHandler}>검색</div>
@@ -282,4 +431,5 @@ export default function MM() {
             </div>
         </div>
     )
+
 }
