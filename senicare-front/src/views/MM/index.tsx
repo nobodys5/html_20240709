@@ -329,6 +329,14 @@ export default function MM() {
         onPageClickHandler, onPreSectionClickHandler, onNextSectionClickHandler
     } = usePagenation<Tool>();
 
+
+    // function: tool list 불러오기 함수 //
+    const getToolList = () => {
+      const accessToken = cookies[ACCESS_TOKEN];
+      if (!accessToken) return;
+      getToolListRequest(accessToken).then(getToolListResponse);
+    };
+    
     // function: get tool list response 처리 함수 //
     const getToolListResponse = (resposenBody: GetToolListResponseDto | ResponseDto | null) => {
         const message = 
@@ -347,14 +355,8 @@ export default function MM() {
         setOriginalList(tools);
     };
 
-    // function: tool list 불러오기 함수 //
-    const getToolList = () => {
-      const accessToken = cookies[ACCESS_TOKEN];
-      if (!accessToken) return;
-      getToolListRequest(accessToken).then(getToolListResponse);
-    };
+    
     // // function: get tool list response 처리 함수 //
-    // const
 
     // function: 등록 박스 뷰 상태 변경 함수 //
     const unShowPostBox = () => setShowPostBox(false);

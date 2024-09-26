@@ -102,6 +102,8 @@ input::placeholder {
 }
 
 #main-wrapper {
+    display: flex;
+    justify-content: center;
     padding: 24px;
     background-color: rgba(238, 238, 238, 0.5);
 }

@@ -5,7 +5,7 @@ import { Route, Routes, useNavigate } from 'react-router';
 import MainLayout from './layouts/MainLaout';
 import { useCookies } from 'react-cookie';
 import { ACCESS_TOKEN, AUTH_ABSOLUTE_PATH, AUTH_PATH, CS_ABSOLUTE_PATH, CS_DETAIL_PATH, CS_PATH, CS_UPDATE_PATH, CS_WRITE_PATH, HR_DETAIL_PATH, HR_PATH, MM_PATH, OTHER_PATH, ROOT_PATH, SNS_SUCCESS_PATH } from './constants';
-import CSWrite from './views/CS';
+import CSWrite from './views/CS/Write';
 import CS from './views/CS';
 import CSDetail from './views/CS/Detail';
 import CSUpdate from './views/CS/Update';
@@ -106,7 +106,7 @@ export default function Senicare() {
   useEffect(() => {
     const accessToken = cookies[ACCESS_TOKEN];
     if (accessToken) {
-        getSignInRequest(accessToken)
+        getSignInRequest(accessToken).then(getSignInResponse);
     }
     else setSignInUser(null);
 
