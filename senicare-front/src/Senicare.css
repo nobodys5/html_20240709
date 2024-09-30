@@ -146,6 +146,10 @@ input::placeholder {
     background-color: var(--gray-color);
 }
 
+.button.error {
+    background-color: var(--error-color);
+}
+
 .disable:hover {
     opacity: 1;
     cursor: default;

@@ -180,6 +180,7 @@
     width: 1134px;
 }
 
+
 #mm-wrapper .top, 
 #cs-wrapper .top, 
 #hr-wrapper .top 
@@ -191,7 +192,8 @@
 
 #mm-wrapper .main, 
 #cs-wrapper .main, 
-#hr-wrapper .main 
+#hr-wrapper .main,
+#cs-detail-wrapper .main 
 {
     display: flex;
     flex-direction: column;
