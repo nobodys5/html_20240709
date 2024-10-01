@@ -11,6 +11,7 @@ import CSDetail from './views/CS/Detail';
 import CSUpdate from './views/CS/Update';
 import MM from './views/MM';
 import HR from './views/HR';
+import HRDetail from './views/HR/Detail';
 import { useSearchParams } from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
 import { getSignInRequest } from './apis';
@@ -130,7 +131,7 @@ export default function Senicare() {
 
       <Route path={HR_PATH} element={<MainLayout />}>
         <Route index element={<HR />}/>
-        <Route path={HR_DETAIL_PATH(':userId')} element={<></>}/>
+        <Route path={HR_DETAIL_PATH(':userId')} element={<HRDetail />}/>
       </Route>
       <Route path={SNS_SUCCESS_PATH} element={<SnsSuccess />} />;
       <Route path={OTHER_PATH} element={<Index />}/>
